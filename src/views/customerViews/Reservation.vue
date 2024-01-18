@@ -1,49 +1,26 @@
 <template>
-  <div>
-    <div>
-      <div v-if="status">
-        <h2>Reservation Details</h2>
-        <p><strong>Reservation Id:</strong> Rp{{ reservation.id }}</p>
-        <p><strong>Amount:</strong> Rp{{ reservation.amount }}</p>
-        <p><strong>Check-in:</strong> {{ formatDate(reservation.checkin) }}</p>
-        <p>
-          <strong>Check-out:</strong> {{ formatDate(reservation.checkout) }}
-        </p>
-        <p><strong>Status:</strong> {{ reservation.status }}</p>
-        <p><strong>Guest Total:</strong> {{ reservation.guestTotal }}</p>
-
-        <div class="">
-          <img
-            v-for="image in reservation.room.images"
-            :key="image.id"
-            :src="getImageUrl(reservation.roomId, image.images)"
-            alt="Room Image"
-            class="w-52 mr-4 mb-4"
-          />
-        </div>
-
-        <h4>Room Facilities</h4>
-        <div
-          v-for="facility in reservation.room.roomFacilityRelation"
-          :key="facility.facilityId"
-          class="mb-2"
-        >
-          <p>{{ facility.facility.name }}</p>
-        </div>
-      </div>
-      <div v-else>
-        <p class="mb-8">Loading reservation details...</p>
-      </div>
-      <button @click="handlePayment()">Pay Now</button>
-    </div>
+  <header>
+    <Navbar />
+  </header>
+  <div v-if="status" class="container mx-auto">
+    <main>
+      <section class="flex flex-wrap justify-center gap-4 mx-auto mt-5">
+        <RoomCard :reservation="reservation" />
+      </section>
+      <ReservationDetails :reservation="reservation" @payNow="handlePayment" />
+    </main>
   </div>
 </template>
 
 <script setup>
+import Navbar from "@/components/Navbar.vue";
+import RoomCard from "@/components/RoomCard.vue";
+import ReservationDetails from "@/components/ReservationDetails.vue";
+
+import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
 import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
-import { getRoomImageUrl } from "@/api/imageApi";
 import {
   genereateToken,
   paymentSuccess,
@@ -54,10 +31,11 @@ import router from "@/router";
 const status = ref(false);
 const reservation = ref("");
 const id = ref(useRoute().params.id);
+console.log(reservation);
 
 const fetchReservation = async () => {
   try {
-    const url = `http://localhost:3001/reservations/${id.value}`;
+    const url = `http://localhost:3000/reservations/${id.value}`;
     const response = await axios.get(url);
 
     if (response.data.status) {
@@ -71,16 +49,12 @@ const fetchReservation = async () => {
   }
 };
 
-const getImageUrl = (roomId, imageName) => getRoomImageUrl(roomId, imageName);
-
-const formatDate = (dateString) => {
-  const options = { year: "numeric", month: "long", day: "numeric" };
-  return new Date(dateString).toLocaleDateString(undefined, options);
-};
-
 const handlePayment = async () => {
   try {
-    const getToken = await genereateToken(reservation.value.id);
+    // Generate token for payment
+    const orderId = uuidv4();
+    console.log(orderId);
+    const getToken = await genereateToken(reservation.value.id, orderId);
     console.log(getToken.data);
     window.snap.pay(getToken.data.transactionToken, {
       onSuccess: async (result) => {
@@ -90,35 +64,36 @@ const handlePayment = async () => {
         console.log(result);
         router.push({ path: "/" });
       },
-      onPending: (result) => {
+      onPending: async (result) => {
         /* You may add your own implementation here */
         alert("waiting for your payment!");
+        await genereateToken(reservation.value.id);
         console.log(result);
       },
       onError: async (result) => {
         /* You may add your own implementation here */
-        await paymentCancel(reservation.value.id);
+        await paymentCacel(reservation.value.id);
         alert("payment failed!");
         console.log(result);
       },
       onClose: () => {
         /* You may add your own implementation here */
-        alert("you closed the popup without finishing the payment");
+        alert("you closed the popup witdout finishing tde payment");
       },
     });
   } catch (error) {
-    // Handle the error if needed
+    // Handle tde error if needed
     console.error("Error handling payment:", error.message);
   }
 };
 
 onMounted(() => {
   fetchReservation();
-  // Load the external script after the component is mounted
+  // Load tde external script after tde component is mounted
   const script = document.createElement("script");
   script.type = "text/javascript";
   script.src = "https://app.sandbox.midtrans.com/snap/snap.js";
-  script.setAttribute("data-client-key", "SB-Mid-client-5WZfDQJ7h6q6wDp"); // Replace with your actual client key
+  script.setAttribute("data-client-key", "SB-Mid-client-5WZfDQJ7h6q6wDp"); // Replace witd your actual client key
   document.head.appendChild(script);
 });
 </script>

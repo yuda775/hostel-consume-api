@@ -6,7 +6,7 @@ export const getAvailableRooms = async (
   type,
   guestTotal
 ) => {
-  return await axios.post("http://localhost:3001/rooms/available-room", {
+  return await axios.post("http://localhost:3000/rooms/available-room", {
     checkin,
     checkout,
     type,

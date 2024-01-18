@@ -3,6 +3,16 @@ import { createRouter, createWebHistory } from "vue-router";
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    // Auth Router
+    {
+      path: "/login",
+      component: () => import("@/views/auth/Login.vue"),
+    },
+    {
+      path: "/register",
+      component: () => import("@/views/auth/Register.vue"),
+    },
+
     // Customer Router
     {
       path: "/",
@@ -13,6 +23,11 @@ const router = createRouter({
       path: "/reservation/:id",
       component: () => import("@/views/customerViews/Reservation.vue"),
       name: "Reservation",
+    },
+    {
+      path: "/reservation/user/:userId",
+      component: () => import("@/views/customerViews/UserReservation.vue"),
+      name: "UserReservation",
     },
 
     // Admin Router
@@ -28,6 +43,10 @@ const router = createRouter({
         {
           path: "/admin/rooms",
           component: () => import("../views/adminViews/Rooms.vue"),
+        },
+        {
+          path: "/admin/reservation",
+          component: () => import("../views/adminViews/Reservation.vue"),
         },
       ],
     },

@@ -173,6 +173,13 @@ const checkRoomAvailability = async () => {
 
 const reserveRoom = async (roomId) => {
   try {
+    if (!localStorage.getItem("token")) {
+      console.log("ini token", localStorage.getItem("token"));
+      alert("Please login first");
+      router.push({
+        path: `/login`,
+      });
+    }
     const response = await createReservation(
       roomId,
       checkin.value,
@@ -183,7 +190,6 @@ const reserveRoom = async (roomId) => {
     console.log(reservations.value);
     if (response.data.status) {
       await checkRoomAvailability();
-      console.log("Reservation created successfully!");
       router.push({
         path: `/reservation/${reservations.value.id}`,
       });

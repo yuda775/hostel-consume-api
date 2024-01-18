@@ -14,6 +14,16 @@
     <a
       class="block p-4"
       :class="{
+        'bg-sky-800 text-white font-black': isActive('reservation'),
+        'text-slate-200': !isActive('reservation'),
+      }"
+      @click="navigateTo('reservation')"
+    >
+      Reservation
+    </a>
+    <a
+      class="block p-4"
+      :class="{
         'bg-sky-800 text-white font-black': isActive('rooms'),
         'text-slate-200': !isActive('rooms'),
       }"
@@ -24,17 +34,16 @@
   </div>
 </template>
 
-<script>
-export default {
-  methods: {
-    navigateTo(route) {
-      this.$router.push(`/admin/${route}`);
-    },
-    isActive(route) {
-      return this.$route.path.includes(route);
-    },
-  },
-};
+<script setup>
+// import router
+import { useRouter } from "vue-router";
+const router = useRouter();
+function navigateTo(route) {
+  router.push(`/admin/${route}`);
+}
+function isActive(route) {
+  return router.currentRoute.value.path === `/admin/${route}`;
+}
 </script>
 
 <style scoped>
