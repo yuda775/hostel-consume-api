@@ -51,7 +51,7 @@ export const getReservationByUserId = async (userId) => {
     Authorization: `Bearer ${token}`,
   };
 
-  return await axios.get("http://localhost:3000/reservations/user/" + userId, {
+  return await axios.get("http://localhost:3000/reservations/user/" + parseInt(userId), {
     headers,
   });
 };

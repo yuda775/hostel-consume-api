@@ -1,9 +1,9 @@
 <template>
   <div class="grid md:grid-cols-1 lg:grid-cols-2 gap-4">
     <div
-      v-for="room in data.rooms"
+      v-for="room in rooms"
       :key="room.id"
-      class="bg-white grid grid-cols-2 w-full rounded-lg overflow-hidden shadow-md relative"
+      class="bg-white grid grid-cols-2 w-full rounded-lg overflow-hidden shadow-lg relative"
     >
       <img
         :src="getImageUrl(room.id, room.images[0].images)"
@@ -47,12 +47,6 @@
         class="absolute top-3 right-10 bg-white border rounded-lg outline-2 outline-slate-600 shadow p-2 flex flex-col"
       >
         <button
-          class="p-2 font-medium hover:font-bold text-sky-400"
-          @click="showDetails(room)"
-        >
-          Details
-        </button>
-        <button
           class="p-2 font-medium hover:font-bold text-orange-400"
           @click="editRoom(room)"
         >
@@ -60,7 +54,7 @@
         </button>
         <button
           class="p-2 font-medium hover:font-bold text-red-400"
-          @click="deleteRoom(room)"
+          @click="destroyRoom(room)"
         >
           Delete
         </button>
@@ -70,41 +64,31 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, defineProps } from "vue";
+import { deleteRoom } from "@/api/roomApi";
 
-const API_URL = "http://localhost:3000/rooms";
-const data = ref([]);
+const { rooms } = defineProps({
+  rooms: Object,
+});
+
+const emit = defineEmits(["roomDeleted"]);
+
 const selectedRoom = ref(null);
-
-async function fetchRooms() {
-  try {
-    const response = await fetch(API_URL);
-    if (!response.ok) {
-      throw new Error(`Failed to fetch data. Status: ${response.status}`);
-    }
-    data.value = await response.json();
-  } catch (error) {
-    console.error(error.message);
-  }
-}
 
 function showOptions(roomId) {
   selectedRoom.value = selectedRoom.value === roomId ? null : roomId;
-}
-
-function showDetails(room) {
-  console.log("Show details for room:", room);
 }
 
 function editRoom(room) {
   console.log("Edit room:", room);
 }
 
-function deleteRoom(room) {
-  console.log("Delete room:", room);
+async function destroyRoom(room) {
+  console.log("Destroy room:", room);
+  const response = await deleteRoom(room.id);
+  console.log("Delete response:", response);
+  emit("roomDeleted");
 }
-
-onMounted(fetchRooms);
 
 // Function to get the full image URL
 function getImageUrl(roomId, imageName) {

@@ -90,6 +90,7 @@
           >
             Room Number: {{ room.roomNumber }}
           </h4>
+          <p class="font-bold text-slate-700">Capacity: {{ room.capacity }}</p>
           <div
             class="block mb-8 font-sans text-base antialiased font-normal leading-relaxed text-gray-700"
           >
@@ -155,6 +156,16 @@ const message = ref("");
 
 const checkRoomAvailability = async () => {
   try {
+    if (checkout.value <= checkin.value) {
+      alert("Check-in date must be before check-out date");
+      return (availableRooms.value = [] && (status.value = false));
+    }
+
+    if (checkin.value < new Date().toISOString().split("T")[0]) {
+      alert("Check-in date must be in the future");
+      return (availableRooms.value = [] && (status.value = false));
+    }
+
     const response = await getAvailableRooms(
       checkin.value,
       checkout.value,

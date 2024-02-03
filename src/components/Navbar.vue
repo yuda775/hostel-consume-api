@@ -23,40 +23,31 @@
           <a
             class="text-md font-bold text-blue-600 hover:text-blue-700"
             href="/"
-            >Home</a
-          >
+          >Home</a>
         </li>
         <li class="text-gray-300">
           <NavItemGaps />
         </li>
         <li>
-          <a class="text-sm text-gray-400 hover:text-gray-500" href="#"
-            >Available Rooms</a
-          >
+          <a class="text-sm text-gray-400 hover:text-gray-500" href="#">Available Rooms</a>
         </li>
         <li class="text-gray-300">
           <NavItemGaps />
         </li>
         <li>
-          <a class="text-sm text-gray-400 hover:text-gray-500" href="#"
-            >Our Rooms</a
-          >
+          <a class="text-sm text-gray-400 hover:text-gray-500" href="#">Our Rooms</a>
         </li>
         <li class="text-gray-300">
           <NavItemGaps />
         </li>
         <li>
-          <a class="text-sm text-gray-400 hover:text-gray-500" href="#"
-            >Facilities</a
-          >
+          <a class="text-sm text-gray-400 hover:text-gray-500" href="#">Facilities</a>
         </li>
         <li class="text-gray-300">
           <NavItemGaps />
         </li>
         <li>
-          <a class="text-sm text-gray-400 hover:text-gray-500" href="#"
-            >Contact</a
-          >
+          <a class="text-sm text-gray-400 hover:text-gray-500" href="#">Contact</a>
         </li>
       </ul>
       <div
@@ -66,7 +57,7 @@
         <ul class="py-1">
           <li>
             <a
-              threfo="/profile"
+              href="/profile"
               class="block px-4 py-2 text-xs text-gray-700 hover:bg-gray-100"
             >
               My Profile
@@ -98,7 +89,7 @@
           </li>
         </ul>
       </div>
-      <div v-if="isLoggedIn" class="flex items-center space-x-4">
+      <div v-if="isLoggedIn" class="flex items-center space-x-4 relative">
         <div
           class="flex items-center space-x-4 cursor-pointer"
           @click="toggleDropdown"
@@ -106,22 +97,20 @@
           <img
             v-show="user.avatar"
             :src="user.avatar"
-            alt="User Avatar"
+            :alt="user.fullName || user.alt"
             class="h-8 w-8 rounded-full object-cover"
           />
           <span
             v-show="!user.avatar"
             class="h-8 w-8 bg-gray-300 rounded-full cursor-pointer"
           ></span>
-
-          <div
-            v-show="showDropdown"
-            class="absolute top-12 right-15 bg-white border border-gray-200 rounded-md shadow-md"
-          ></div>
-
-          <span class="text-gray-900 text-sm font-bold">{{
-            user.fullName
-          }}</span>
+          <span class="text-gray-900 text-sm font-bold">{{ user.fullName }}</span>
+        </div>
+        <div
+          v-show="showDropdown"
+          class="absolute top-12 right-5 bg-white border border-gray-200 rounded-md shadow-md"
+        >
+          <!-- Isi dropdown di sini sesuai kebutuhan -->
         </div>
       </div>
       <div v-else>
@@ -159,15 +148,12 @@ const token = localStorage.getItem("token");
 const decodedUser = decodeToken(token);
 const user = ref(
   decodedUser || {
-    fullName: "Yuda Saputra",
-    avatar: "images/avatar.jpeg",
+    fullName: "Tester",
+    avatar: "./images/avatar.jpeg",
   }
 );
 
-console.log(user);
 const isLoggedIn = ref(!!token);
-console.log("isLoggedIn", isLoggedIn.value);
-
 const showDropdown = ref(false);
 
 // Function to toggle the dropdown visibility
@@ -176,13 +162,10 @@ const toggleDropdown = () => {
 };
 
 const logout = () => {
-  // Remove token and user from local storage
   localStorage.removeItem("token");
   localStorage.removeItem("user");
   isLoggedIn.value = false;
   router.push("/");
-
-  // Toggle dropdown visibility
   showDropdown.value = false;
 };
 
@@ -190,12 +173,7 @@ function decodeToken(token) {
   try {
     const [header, payload] = token.split(".");
     const decodedPayload = JSON.parse(atob(payload));
-    const {
-      userId,
-      fullName,
-      avatar = "./images/avatar.jpeg",
-    } = decodedPayload;
-
+    const { userId, fullName, avatar } = decodedPayload;
     return { userId, fullName, avatar };
   } catch (error) {
     console.error("Error decoding token:", error);

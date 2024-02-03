@@ -51,7 +51,10 @@ const updateCalendarEvents = () => {
     extendedProps: {
       reservationId: reservation.id,
       clickable: true,
-      customerName: reservation.Users.fullName,
+      customerName:
+        (reservation.Users && reservation.Users.fullName) ||
+        reservation.customerName ||
+        "Nama Tidak Tersedia",
       roomNumber: reservation.room.roomNumber,
       roomType: reservation.room.type,
       guestTotal: reservation.guestTotal,

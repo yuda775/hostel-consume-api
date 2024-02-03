@@ -1,6 +1,9 @@
 <template>
+  <header>
+    <Navbar />
+  </header>
   <div class="p-6">
-    <h1 class="text-3xl font-bold my-6 mx-5">My Reservations</h1>
+    <h1 class="text-3xl font-bold my-6 mx-auto w-2/3">My Reservations</h1>
 
     <div v-if="loading" class="text-center">Loading...</div>
 
@@ -33,7 +36,7 @@
               <p><strong>Guest Total:</strong> {{ reservation.guestTotal }}</p>
               <p>
                 <span
-                  class="inline-block w-24 rounded-lg px-3 py-1 text-md text-white text-center font-bold mt-3"
+                  class="inline-block rounded-lg px-4 pb-2 pt-1 text-sm text-white text-center font-bold mt-3"
                   :class="{
                     'bg-orange-400': reservation.status === 'pending',
                     'bg-green-400': reservation.status === 'paid',
@@ -52,6 +55,8 @@
 </template>
 
 <script setup>
+import Navbar from "@/components/Navbar.vue";
+
 import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import { getReservationByUserId } from "@/api/reservationApi";

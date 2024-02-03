@@ -7,5 +7,5 @@
 </template>
 
 <script setup>
-import AdminReservationCalendar from "@/components/AdminReservationCalendar.vue";
+import AdminReservationCalendar from "@/components/admin/reservation/AdminReservationCalendar.vue";
 </script>

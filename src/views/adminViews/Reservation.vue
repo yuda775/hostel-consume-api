@@ -7,5 +7,5 @@
 </template>
 
 <script setup>
-import AdminReservationTable from "@/components/AdminReservationTable.vue";
+import AdminReservationTable from "@/components/admin/reservation/AdminReservationTable.vue";
 </script>
