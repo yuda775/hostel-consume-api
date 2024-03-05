@@ -12,6 +12,18 @@
         <input type="hidden" name="remember" value="true" />
         <div class="rounded-md shadow-sm -space-y-px">
           <div>
+            <label for="fullName" class="sr-only">fullName</label>
+            <input
+              id="fullName"
+              name="fullName"
+              type="fullName"
+              v-model="fullName"
+              required
+              class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+              placeholder="fullName"
+            />
+          </div>
+          <div>
             <label for="email-address" class="sr-only">Email address</label>
             <input
               id="email-address"
@@ -52,18 +64,20 @@
 
 <script setup>
 import { ref } from "vue";
-import { login } from "@/api/authApi";
+import { register } from "@/api/authApi";
 import router from "@/router";
 
 const email = ref("");
 const password = ref("");
+const fullName = ref("");
 
 const submitForm = async () => {
   if (!email.value || !password.value) {
     alert("Email and password are required.");
     return;
   }
-  const response = await login(email.value, password.value);
+  console.log(fullName.value, email.value, password.value);
+  const response = await register(email.value, password.value, fullName.value);
   console.log(response.data.token);
   if (response.data.status) {
     localStorage.setItem("token", response.data.token);

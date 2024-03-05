@@ -6,3 +6,11 @@ export const login = async (email, password) => {
     password,
   });
 };
+
+export const register = async (email, password, fullName) => {
+  return await axios.post("http://localhost:3000/auth/register", {
+    email,
+    password,
+    fullName,
+  });
+};
