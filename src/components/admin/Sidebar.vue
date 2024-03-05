@@ -32,6 +32,16 @@
       >
         Rooms
       </a>
+      <a
+        class="block p-4 cursor-pointer hover:font-black"
+        :class="{
+          'bg-sky-900 text-white font-black': isActive('roomFacilities'),
+          'text-slate-200': !isActive('roomFacilities'),
+        }"
+        @click="navigateTo('roomFacilities')"
+      >
+        Room Facilities
+      </a>
     </div>
   </div>
 </template>

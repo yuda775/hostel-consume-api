@@ -37,7 +37,10 @@ const calendarOptions = reactive({
 const fetchReservations = async () => {
   try {
     const response = await getReservations();
-    reservations.value = response.data.reservations;
+    // filter reservations by status "paid"
+    reservations.value = response.data.reservations.filter(
+      (reservation) => reservation.status === "paid"
+    );
   } catch (error) {
     console.error("Error fetching reservations:", error);
   }

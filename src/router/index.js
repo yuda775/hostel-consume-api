@@ -48,6 +48,10 @@ const router = createRouter({
           path: "/admin/reservation",
           component: () => import("../views/adminViews/Reservation.vue"),
         },
+        {
+          path: "/admin/roomFacilities",
+          component: () => import("../views/adminViews/RoomFacilities.vue"),
+        },
       ],
     },
   ],
